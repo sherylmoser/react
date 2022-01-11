@@ -1,0 +1,62 @@
+body {
+  background-color: #f5f5f5;
+  font-family: 'Roboto', sans-serif;
+}
+.App {
+  text-align: center;
+}
+
+.ttt-board {
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ttt-board > div {
+  display: flex;
+  font-size: 32px;
+}
+
+.ttt-board .board-row:not(:last-of-type) {
+  border-bottom: 1px solid black;
+}
+
+
+.ttt-board .board-row button:not(:last-child) {
+  border-right: 1px solid black;
+}
+
+.ttt-square {
+  width: 100px;
+  height: 100px;
+  background: none;
+  margin: 0;
+  font-size: 90px;
+  font-weight: 100;
+  text-align: center;
+  border:none;
+}
+
+.ttt-square:hover, .startOver:hover {
+  background-color: #0cbfe3;
+}
+
+.startOver {
+  background: none;
+  margin-top: 20px;
+  width: 150px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 15px;
+  font-size: 20px;
+}
+
+.winCountBox {
+  display: flex;
+  justify-content: center;
+}
+.winCount {
+  font-size: 20px;
+  margin: 30px 15px;
+}
