@@ -1,8 +1,22 @@
 import { SignUpFormValues } from "../components/signUpForm"
+import companies from "./companies.json"
 
+type APIResponse<T> = {
+    data?: T,
+    status: string
+}
+
+export type Company = {
+    id: number;
+    name: string;
+    description: string;
+    email: string;
+    address: string;
+    phone: string;
+}
 
 export default class API {
-    static signUp(formValues: SignUpFormValues) {
+    static signUp(formValues: SignUpFormValues): Promise<APIResponse<any>> {
         const { password, confirmPassword, ...user } = formValues;
         const hashedPassword = btoa(`${user.username}${password}`);
         window.localStorage.setItem(hashedPassword, JSON.stringify(user));
@@ -36,7 +50,17 @@ export default class API {
                     data: {
                         message: "user not found"
                     },
-                    status: "success"
+                    status: "error"
+                })
+            }, 1500)
+        })
+    }
+    static getCompanies(): Promise<APIResponse<Company[]>> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve({
+                    data: companies,
+                    status: 'success'
                 })
             }, 1500)
         })

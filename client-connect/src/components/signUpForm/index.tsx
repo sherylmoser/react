@@ -48,7 +48,7 @@ export function SignUpForm({ onSuccess, onError }: SignUpProps) {
                 <label>Confirm Password</label>
                 <input type="password" {...register("confirmPassword")} placeholder="Confirm Password" />
             </Form.Field>
-            <Button type="submit">Sign In</Button>
+            <Button type="submit">Sign Up</Button>
         </Form>
     );
 }
