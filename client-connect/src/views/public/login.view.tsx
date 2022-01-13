@@ -1,34 +1,36 @@
-import { useState } from "react";
-import { Container } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import { Container, Message } from "semantic-ui-react";
 import { Login, LoginFormValues } from "../../components/login";
 import API from "../../dataLayer/api";
+import { useGlobalContext } from "../../contexts/global.context";
+import { useNavigate } from "react-router-dom";
 
 
 
 export function LoginView() {
+    const { state, onLogin } = useGlobalContext();
+    const navigate = useNavigate()
     const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (state.loggedIn) {
+            navigate("/companies")
+        }
+    }, [state.loggedIn])
 
     const handleSignIn = async (formValues: LoginFormValues) => {
         const { username, password } = formValues;
         if (!username || !password) {
-            alert("NO")
-            return;
+            return
         }
-        setLoading(true)
-        try {
-            const result = await API.login(username, password)
-            console.log(result)
-            //handle result
-        } catch (e) {
-            //handle error
-        } finally {
-            setLoading(false)
-        }
+        onLogin?.(username, password)
     }
     return (
         <Container style={{ width: 400, margin: 48 }}>
-            {loading ? <span>Loading...</span> : null}
+            {state.loading ? <span>Loading...</span> : null}
+            {state.error && <Message warning>{state.error}</Message>}
             <Login onSuccess={handleSignIn} />
+
         </Container>
     );
 }

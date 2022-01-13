@@ -3,7 +3,15 @@ import companies from "./companies.json"
 
 type APIResponse<T> = {
     data?: T,
-    status: string
+    status: string,
+    message?: string
+}
+
+export type User = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
 }
 
 export type Company = {
@@ -29,7 +37,7 @@ export default class API {
             }, 1500)
         })
     }
-    static login(username: string, password: string) {
+    static login(username: string, password: string): Promise<APIResponse<User>> {
         return new Promise((resolve, reject) => {
             const hashedPassword = btoa(`${username}${password}`);
             const userJSON = window.localStorage.getItem(hashedPassword)
@@ -47,9 +55,7 @@ export default class API {
             }
             setTimeout(() => {
                 resolve({
-                    data: {
-                        message: "user not found"
-                    },
+                    message: "user not found",
                     status: "error"
                 })
             }, 1500)
