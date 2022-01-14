@@ -1,14 +1,9 @@
 import './styles/App.css';
 import { useGlobalContext } from './contexts/global.context';
-import { ProtectedRoutes, PublicRoutes } from './routes';
+import { MainRoutes } from './routes';
 
 function App() {
-  const { state: { loggedIn } } = useGlobalContext();
-
-  if (loggedIn) {
-    return <ProtectedRoutes />
-  }
-  return <PublicRoutes />
+  return <MainRoutes />
 }
 
 

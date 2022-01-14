@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { Container, Message } from "semantic-ui-react";
 import { Login, LoginFormValues } from "../../components/login";
-import API from "../../dataLayer/api";
 import { useGlobalContext } from "../../contexts/global.context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 
 export function LoginView() {
     const { state, onLogin } = useGlobalContext();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate()
-    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (state.loggedIn) {
-            navigate("/companies")
+            const redirect = searchParams.get('redirect')
+            if (redirect) {
+                navigate(redirect)
+            } else {
+                navigate("/companies")
+            }
         }
     }, [state.loggedIn])
 

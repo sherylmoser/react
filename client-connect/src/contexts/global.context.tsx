@@ -1,11 +1,11 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import API, { User } from "../dataLayer/api"
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
+import API, { UserType } from "../dataLayer/api"
 
 type GlobalState = {
     loggedIn?: boolean;
     error?: string;
     loading?: boolean;
-    user?: User;
+    user?: UserType;
 }
 
 type ProviderState = {
@@ -54,12 +54,16 @@ export function GlobalContextProvider({ children }: Props) {
         setState({ loggedIn: false })
     }
 
-    return (
-        <GlobalContext.Provider value={{
+    const providerState = useMemo(() => {
+        return {
             state,
             onLogin: handleLogin,
             onLogout: handleLogout
-        }}>
+        }
+    }, [state])
+
+    return (
+        <GlobalContext.Provider value={providerState}>
             {children}
         </GlobalContext.Provider>
     )

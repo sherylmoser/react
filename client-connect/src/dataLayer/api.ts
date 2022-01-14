@@ -7,20 +7,29 @@ type APIResponse<T> = {
     message?: string
 }
 
-export type User = {
+export type UserType = {
     firstName: string;
     lastName: string;
     email: string;
     username: string;
 }
 
-export type Company = {
+export type CompanyType = {
     id: number;
     name: string;
     description: string;
     email: string;
     address: string;
     phone: string;
+}
+
+function getConnectedCompaniesFromStorage() {
+    const connectedCompaniesJSON = window.localStorage.getItem('connectedCompanies');
+    let connectedCompanies = {} as any
+    if (connectedCompaniesJSON) {
+        connectedCompanies = JSON.parse(connectedCompaniesJSON)
+    }
+    return connectedCompanies
 }
 
 export default class API {
@@ -37,7 +46,7 @@ export default class API {
             }, 1500)
         })
     }
-    static login(username: string, password: string): Promise<APIResponse<User>> {
+    static login(username: string, password: string): Promise<APIResponse<UserType>> {
         return new Promise((resolve, reject) => {
             const hashedPassword = btoa(`${username}${password}`);
             const userJSON = window.localStorage.getItem(hashedPassword)
@@ -61,7 +70,7 @@ export default class API {
             }, 1500)
         })
     }
-    static getCompanies(): Promise<APIResponse<Company[]>> {
+    static getCompanies(): Promise<APIResponse<CompanyType[]>> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve({
@@ -69,6 +78,41 @@ export default class API {
                     status: 'success'
                 })
             }, 1500)
+        })
+    }
+
+    static getConnectedCompanies(userId: string): Promise<APIResponse<number[]>> {
+        let connectedCompanies = getConnectedCompaniesFromStorage()
+        return new Promise((resolve) => {
+            setTimeout(resolve, 1500, {
+                data: connectedCompanies[userId] || [],
+                status: 'success'
+            })
+        })
+    }
+
+    static connectToCompany(userId: string, companyId: number): Promise<APIResponse<number[]>> {
+        let connectedCompanies = getConnectedCompaniesFromStorage()
+        connectedCompanies[userId] = connectedCompanies[userId] || [];
+        connectedCompanies[userId].push(companyId)
+        window.localStorage.setItem('connectedCompanies', JSON.stringify(connectedCompanies));
+        return new Promise((resolve) => {
+            setTimeout(resolve, 1500, {
+                data: connectedCompanies[userId],
+                status: 'success'
+            })
+        })
+    }
+    static disconnectFromCompany(userId: string, companyId: number): Promise<APIResponse<number[]>> {
+        let connectedCompanies = getConnectedCompaniesFromStorage()
+        connectedCompanies[userId] = connectedCompanies[userId] || [];
+        connectedCompanies[userId].splice(connectedCompanies[userId].indexOf(companyId), 1)
+        window.localStorage.setItem('connectedCompanies', JSON.stringify(connectedCompanies));
+        return new Promise((resolve) => {
+            setTimeout(resolve, 1500, {
+                data: connectedCompanies[userId],
+                status: 'success'
+            })
         })
     }
 }
