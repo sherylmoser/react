@@ -7,17 +7,18 @@ type PreferencesState = {
     region?: string;
 }
 
+type ActionType = {
+    type: "all" | "language" | "theme" | "region";
+    data?: any;
+}
+
 type ProviderPreferencesState = {
     state: PreferencesState;
+    dispatch?: (action: ActionType) => void
     onChangeTheme?: (theme: string) => void;
     onChangeLanguage?: (language: string) => void;
     onChangeRegion?: (region: string) => void;
-    onChange?: (newState: PreferencesState) => void;
-}
-
-type ActionType = {
-    type: string;
-    data?: any;
+    onChange?: (key: "language" | "theme" | "region", value: string) => void;
 }
 
 const PreferencesContext = createContext<ProviderPreferencesState>({ state: {} });
@@ -45,20 +46,31 @@ type Props = {
 export const usePreferencesContext = () => {
     return useContext(PreferencesContext)
 }
+
+const stateJSON = window.localStorage.getItem('preferences');
+const defaultState = stateJSON ? JSON.parse(stateJSON) : { theme: 'light', language: 'en', region: 'mst' }
+
 export function PreferencesContextProvider({ children }: Props) {
-    const [state, dispatch] = useReducer(reducer, { theme: 'light', language: 'en', region: 'mst' })
+    const [state, dispatch] = useReducer(reducer, defaultState)
+
+    useEffect(() => {
+        console.log(state);
+
+        window.localStorage.setItem('preferences', JSON.stringify(state))
+    }, [state])
 
     return (
         <PreferencesContext.Provider value={{
             state,
-            onChange: (state: PreferencesState) => {
-                dispatch({ type: 'all', data: state })
+            dispatch,
+            onChange: (key: "language" | "theme" | "region", value: string) => {
+                dispatch({ type: key, data: value })
             },
             onChangeLanguage: (language: string) => {
                 dispatch({ type: 'language', data: language })
             },
             onChangeRegion: (Region: string) => {
-                dispatch({ type: 'Region', data: Region })
+                dispatch({ type: 'region', data: Region })
             },
             onChangeTheme: (theme: string) => {
                 dispatch({ type: 'theme', data: theme })

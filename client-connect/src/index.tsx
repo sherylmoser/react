@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { GlobalContextProvider } from './contexts/global.context';
+import { PreferencesContextProvider } from './contexts/preferences.context';
 
 
 
@@ -16,7 +17,9 @@ ReactDOM.render(
     <QueryClientProvider client={client}>
       <BrowserRouter>
         <GlobalContextProvider>
-          <App />
+          <PreferencesContextProvider>
+            <App />
+          </PreferencesContextProvider>
         </GlobalContextProvider>
       </BrowserRouter>
     </QueryClientProvider>

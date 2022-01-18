@@ -7,6 +7,8 @@ import { CompaniesView } from '../views/public/companies.view';
 import { useGlobalContext } from '../contexts/global.context';
 import { ConnectedCompaniesView } from '../views/protected/connectedCompanies.view';
 import { ReactNode } from 'react';
+import { usePreferencesContext } from '../contexts/preferences.context';
+import { AccountView } from '../views/protected/account.view';
 
 type ProtectedViewProps = {
     children: ReactNode
@@ -36,7 +38,9 @@ export function ProtectedMenu() {
                 </Menu.Menu>
                 <Menu.Menu position='right'>
                     <Menu.Item>
-                        <Icon name="user" /> Welcome, {user?.firstName}
+                        <Link to="/account">
+                            <Icon name="user" /> Welcome, {user?.firstName}
+                        </Link>
                     </Menu.Item>
                     <Menu.Item onClick={() => onLogout?.()}>
                         Log Out
@@ -69,7 +73,8 @@ export function PublicMenu() {
 }
 
 export function MainRoutes() {
-    const { state: { loggedIn, user }, onLogout } = useGlobalContext()
+    const { state: { loggedIn, user }, onLogout } = useGlobalContext();
+    const { state: { theme } } = usePreferencesContext();
 
     return (
         <div>
@@ -84,10 +89,14 @@ export function MainRoutes() {
                     <Route path=":id" element={<ProtectedView><ConnectedCompaniesView /></ProtectedView>} />
                     <Route path="" element={<ProtectedView><ConnectedCompaniesView /></ProtectedView>} />
                 </Route>
+                <Route path="/account" element={<ProtectedView><AccountView /></ProtectedView>} />
                 <Route path="/login" element={<LoginView />} />
                 <Route path="/sign-up" element={<SignUpView />} />
                 <Route path="*" element={<NotFound404 />} />
             </Routes>
+            <footer>
+                {theme}
+            </footer>
         </div>
     );
 }
